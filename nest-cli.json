@@ -5,12 +5,9 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "/public/images/images_url/*.png",
-        "outDir": "./dist/public/images/images_url/*.png"
-      },
-      {
-        "include": "/public/images/images_url_temp/*.png",
-        "outDir": "./dist/public/images/images_url_temp/*.png"
+        "include": "public",
+        "outDir": "dist",
+        "watchAssets": true
       }
     ],
     "deleteOutDir": true

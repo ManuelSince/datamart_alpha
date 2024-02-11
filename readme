@@ -3,5 +3,21 @@ make an api for webscrapping
 mandatories:
 API MUST cache and queue requested url webscrapped screenshots and cache it via redis
 
+.env file:
+
+APP_HOST="127.0.0.1"
+APP_PORT=3000
+AUTH_SALT=""
+DATABASE_HOST="localhost"
+DATABASE_PORT=35432
+DATABASE_TYPE="postgresql"
+DATABASE_DATABASE="datamart"
+DATABASE_USERNAME="root"
+DATABASE_PASSWORD="root"
+DATABASE_URL="postgresql://root:root@localhost:35432/datamart?schema=public"
+REDIS_HOST="127.0.0.1"
+REDIS_PORT=6379
+REDIS_PASSWORD="redis4973"
+
 Launch the database:
 docker-compose up --build --detach

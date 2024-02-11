@@ -19,13 +19,14 @@ import { join } from 'path';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, 'src', 'public'),
     }),
     CacheModule.register(),
     BullModule.forRoot({
       redis: {
         host: redisConfig().redis_host,
         port: redisConfig().redis_port,
+        password: redisConfig().redis_pwd,
       },
     }),
     UrlsModule,

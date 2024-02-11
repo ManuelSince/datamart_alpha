@@ -16,6 +16,7 @@ import { Url } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import job from './job';
+import { BullModule } from '@nestjs/bull';
 
 @Controller('urls')
 export class UrlsController {
@@ -27,17 +28,14 @@ export class UrlsController {
   @Post()
   async create(@Body() createUrlDto: CreateUrlDto): Promise<Url> {
     const { url } = { ...createUrlDto };
-    let data;
-    if (this.cacheManager.get(url) != null) {
-      console.log(`already in for : ${url} date of execution :` + ''); //this.cacheManager.Url.get(url).date,
-      await job(url, 'single');
-      return this.urlsService.create(createUrlDto);
-
-      return this.findOneByUrl(url);
+    let record = await this.urlsService.findOneByUrl(url);
+    console.log(JSON.stringify(record));
+    if (record != null) {
+      return this.urlsService.findOneByUrl(url);
     } else {
+      // BullModule.registerQueue({ name: url, redis: { port: 6380 } });
       console.log('not in db');
       //SCRAPPING AND SHOT
-      await job(url, 'single');
       return this.urlsService.create(createUrlDto);
     }
   }

@@ -3,12 +3,20 @@ import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
 import { PrismaService } from '../prisma.service';
 import { Url, Prisma } from '@prisma/client';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import job from './job';
 
 @Injectable()
 export class UrlsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @InjectQueue('url') private urlQueue: Queue,
+    private prisma: PrismaService,
+  ) {}
   create(createUrlDto: CreateUrlDto): Promise<Url> {
+    const { url } = { ...createUrlDto };
     const something = { ...createUrlDto, img_url: '' };
+    this.urlQueue.add(job(url, 'single')).then(() => console.log('hello'));
     return this.prisma.url.create({ data: something });
   }
 
