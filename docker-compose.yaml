@@ -1,0 +1,40 @@
+version: '3.8'
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: 100m
+    max-file: 100
+
+networks:
+  docker-network:
+    driver: bridge
+
+services:
+  postgres_db:
+    image: bitnami/postgresql:latest
+    platform: linux/amd64
+    ports:
+      - ${DATABASE_PORT}:5432
+    restart: always
+    volumes:
+      - db-data:/bitnami/postgresql
+    environment:
+      - POSTGRESQL_DATABASE=${DATABASE_DATABASE}
+      - POSTGRESQL_USERNAME=${DATABASE_USERNAME}
+      - POSTGRESQL_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - docker-network
+    logging: *default-logging
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local
+  db-data:

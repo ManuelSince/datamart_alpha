@@ -1,0 +1,7 @@
+Purposes:
+make an api for webscrapping
+mandatories:
+API MUST cache and queue requested url webscrapped screenshots and cache it via redis
+
+Launch the database:
+docker-compose up --build --detach
