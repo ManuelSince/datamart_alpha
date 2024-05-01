@@ -17,8 +17,9 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import job from './job';
 import { BullModule } from '@nestjs/bull';
+import { query } from 'express';
 
-@Controller('urls')
+@Controller('api/urls')
 export class UrlsController {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -27,14 +28,12 @@ export class UrlsController {
 
   @Post()
   async create(@Body() createUrlDto: CreateUrlDto): Promise<Url> {
-    const { url } = { ...createUrlDto };
+    const { url } = createUrlDto;
     let record = await this.urlsService.findOneByUrl(url);
-    console.log(JSON.stringify(record));
     if (record != null) {
       return this.urlsService.findOneByUrl(url);
     } else {
-      // BullModule.registerQueue({ name: url, redis: { port: 6380 } });
-      console.log('not in db');
+      BullModule.registerQueue({ name: url, redis: { port: 6380 } });
       //SCRAPPING AND SHOT
       return this.urlsService.create(createUrlDto);
     }
@@ -54,6 +53,17 @@ export class UrlsController {
   findOneByUrl(@Query('url') url: string): Promise<Url> {
     return this.urlsService.findOneByUrl(url);
   }
+  // @Get(':url')
+  // async createImage(@query('url') url: string): Promise<Url> {
+  //   let record = await this.urlsService.findOneByUrl(url);
+  //   if (record != null) {
+  //     return this.urlsService.findOneByUrl(url);
+  //   } else {
+  //     BullModule.registerQueue({ name: url, redis: { port: 6380 } });
+  //     //SCRAPPING AND SHOT
+  //     return this.urlsService.create(url);
+  //   }
+  // }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUrlDto: UpdateUrlDto) {
     return this.urlsService.update(+id, updateUrlDto);

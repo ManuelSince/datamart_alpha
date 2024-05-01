@@ -4,9 +4,10 @@ import { Builder } from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/firefox';
 import { combineImagesVertically } from '../../tools/image/mergeImg';
 
-export default async (url: string, scenario: 'single' | 'merge') => {
-  if (scenario == 'single') {
-    const baseFilename = `dist/public/images/images_url/${url.split('/').join('-')}.png`;
+export default async (url: string, scenario: 'singleShot' | 'merge') => {
+  if (scenario == 'singleShot') {
+    const uri = url.split('/').slice(2, 3).join('-');
+    const baseFilename = `dist/public/images/images_url/${uri}.png`;
     const options = new chrome.Options();
     const driver = await new Builder()
       .setChromeOptions(options)
@@ -17,15 +18,17 @@ export default async (url: string, scenario: 'single' | 'merge') => {
     await driver.navigate().to(url);
 
     // Now capture a screenshot
+
     await driver.executeScript(`window.scrollTo(0, 0);`);
+
     const encodedString = await driver.takeScreenshot();
 
-    await fs.promises
-      .writeFile(baseFilename, encodedString, 'base64')
-      .then(() => console.log('snapshot of ' + baseFilename + ' DONE'));
+    await fs.promises.writeFile(baseFilename, encodedString, 'base64').then();
+    return { msg: 'snapshot taken ', baseFilename: baseFilename };
   } else if (scenario == 'merge') {
     const MAX_SCREENSHOTS = 15;
-    const baseFilename = `${__dirname}/public/images/images_url_temp/`;
+    const uri = url.split('/').slice(2, 3).join('-');
+    const baseFilename = `dist/public/images/images_url_temp/${uri}.png`;
     const options = new chrome.Options();
     const driver = await new Builder()
       .setChromeOptions(options)

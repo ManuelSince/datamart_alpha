@@ -5,11 +5,22 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "public",
-        "outDir": "dist",
+        "include": "email-serveur/**/*",
+        "outDir": "dist/src",
+        "watchAssets": true
+      },
+      {
+        "include": "../public",
+        "outDir": "dist/public",
+        "watchAssets": true
+      },
+      {
+        "include": "../views",
+        "outDir": "dist/views",
         "watchAssets": true
       }
     ],
+    "watchAssets": true,
     "deleteOutDir": true
   }
 }

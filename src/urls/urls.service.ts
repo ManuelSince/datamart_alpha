@@ -13,10 +13,22 @@ export class UrlsService {
     @InjectQueue('url') private urlQueue: Queue,
     private prisma: PrismaService,
   ) {}
-  create(createUrlDto: CreateUrlDto): Promise<Url> {
-    const { url } = { ...createUrlDto };
-    const something = { ...createUrlDto, img_url: '' };
-    this.urlQueue.add(job(url, 'single')).then(() => console.log('hello'));
+  async create(createUrlDto: CreateUrlDto): Promise<Url> {
+    const { url } = createUrlDto;
+
+    const data = await job(url, 'singleShot');
+    const something = {
+      ...createUrlDto,
+      date: new Date(),
+      img_url: data.baseFilename,
+      isScrapped: 1,
+    };
+    console.log(JSON.stringify(something));
+    // this.urlQueue.add(job(url, 'singleShot'));
+    // this.urlQueue.addListener('urlListener', () =>
+    //   console.log('listener listen'),
+    // );
+    return this.prisma.url.findFirst({ where: { url: url } });
     return this.prisma.url.create({ data: something });
   }
 

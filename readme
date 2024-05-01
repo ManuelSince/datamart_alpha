@@ -3,6 +3,10 @@ make an api for webscrapping
 mandatories:
 API MUST cache and queue requested url webscrapped screenshots and cache it via redis
 
+INSTALLATION :
+
+npm i
+
 .env file:
 
 APP_HOST="127.0.0.1"
@@ -19,5 +23,7 @@ REDIS_HOST="127.0.0.1"
 REDIS_PORT=6379
 REDIS_PASSWORD="redis4973"
 
-Launch the database:
+Launch the database and redis:
 docker-compose up --build --detach
+npm run start
+npm run tw

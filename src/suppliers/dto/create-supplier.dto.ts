@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-export class CreateUrlDto {
+export class CreateSupplierDto {
   @ApiProperty({ required: true })
-  url: string;
+  name: string;
 
-  // @ApiProperty({ required: false })
-  // date?: string;
+  @ApiProperty({ required: true })
+  email: string;
 
+  @ApiProperty()
+  token?: string;
   // @ApiProperty({ required: false, default: '' })
   // img_url?: string;
 

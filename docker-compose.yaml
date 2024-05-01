@@ -11,8 +11,9 @@ networks:
     driver: bridge
 
 services:
-  postgres_db:
+  postgres:
     image: bitnami/postgresql:latest
+    container_name: postgres_container
     platform: linux/amd64
     ports:
       - ${DATABASE_PORT}:5432
@@ -26,6 +27,17 @@ services:
     networks:
       - docker-network
     logging: *default-logging
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - '8888:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${DATABASE_USERNAME}
+      - PGADMIN_DEFAULT_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
   cache:
     image: redis:6.2-alpine
     restart: always
@@ -38,3 +50,4 @@ volumes:
   cache:
     driver: local
   db-data:
+  pgadmin-data:
